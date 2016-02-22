@@ -10,7 +10,6 @@ import java.util.*;
 
 public class FichContPalabras {
         public Map mapearArchivo (BufferedReader br) throws IOException {
-                
                 Map map = new TreeMap ();
                 String linea;
 
@@ -27,10 +26,6 @@ public class FichContPalabras {
                         }
                 }
                 br.close ();
-
-                List claves = new ArrayList (map.keySet ());
-                Collections.sort (claves);
-
                 return map;
 
         }

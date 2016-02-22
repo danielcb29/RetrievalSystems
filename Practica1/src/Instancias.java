@@ -19,16 +19,10 @@ public class Instancias {
                 for (int i=0; i<listaFicheros.length; i++)
                         System.out.println(listaFicheros[i]);
         }
-        else try {
+        else{ 
                 FileReader fr = new FileReader(fichero);
                 BufferedReader br = new BufferedReader(fr);
-                String linea;
-                while ((linea=br.readLine()) != null)
-                        System.out.println(linea);
-             }
-             catch (FileNotFoundException fnfe) {
-                System.out.println("Fichero desaparecido en combate  ;-)");
-             }
- }
+                //Map mapaConteo = 
+        }
 }
-
+}
