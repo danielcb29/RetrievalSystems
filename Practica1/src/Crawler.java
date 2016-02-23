@@ -9,7 +9,10 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.file.Files;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Scanner;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 
@@ -21,18 +24,20 @@ public class Crawler {
 		this.vocabulario = new TreeMap();
 	}
 	
-	public void mapearArchivo (BufferedReader br) throws IOException {
+	public void mapearArchivo (BufferedReader br, Integer nt, String url) throws IOException {
         String linea;
 
         while ( (linea = br.readLine () ) != null) {
                 StringTokenizer st = new StringTokenizer (linea, ",.;(){}=+\"\'#&%?¿!¡*<>:-// ");
                 while (st.hasMoreTokens () ) {
                         String s = st.nextToken();
-                        Object o = this.vocabulario.get(s);                        
-                        if (o == null) this.vocabulario.put (s, new Integer (1));
+                        Object o = this.vocabulario.get(s);
+                        if (o == null){
+                        	this.vocabulario.put (s, new Ocurr(url,nt));
+                        }
                         else {
-                                Integer cont = (Integer) o;
-                                this.vocabulario.put (s, new Integer (cont.intValue () + 1));
+                                Ocurr ocurr = (Ocurr) o;
+                                ocurr.putOcurrencia(url, nt);
                         }
                 }
         }
@@ -81,14 +86,33 @@ public class Crawler {
         		//System.out.println(fichero.toString());
                 FileReader fr = new FileReader(fichero);
                 BufferedReader br = new BufferedReader(fr);
-                mapearArchivo(br);
+                mapearArchivo(br,countWords(fichero),fichero.toString());
                 
         }
 	}
 	
+	public Integer countWords(File fl) throws IOException{
+		int result = 0;
+		Scanner in = new Scanner(new FileInputStream(fl));
+	    while(in.hasNextLine())  {
+	        String line = in.nextLine();
+	        result += new StringTokenizer(line, ",.;(){}=+\"\'#&%?¿!¡*<>:-// ").countTokens();
+	    }
+        return new Integer(result);
+
+	}
 	public Map getVocabulario(){
 		return this.vocabulario;
 	}
 
+	public void stringVocabulario(){
+		Set a = this.vocabulario.keySet();
+		Iterator i = a.iterator();
+		while(i.hasNext()) {
+	        String setElement = (String) i.next();
+	        System.out.println(setElement+": "+this.vocabulario.get(setElement));
+	    }
+		
+	}
 	
 }
