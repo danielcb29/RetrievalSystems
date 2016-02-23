@@ -15,29 +15,32 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
+import java.util.Vector;
 
 public class Crawler {
 	
 	private Map vocabulario;
+	private Vector<String> urls;
 	
 	Crawler(){
 		this.vocabulario = new TreeMap();
+		this.urls = new Vector<String>();
 	}
 	
 	public void mapearArchivo (BufferedReader br, Integer nt, String url) throws IOException {
         String linea;
-
+        this.urls.add(url);
         while ( (linea = br.readLine () ) != null) {
                 StringTokenizer st = new StringTokenizer (linea, ",.;(){}=+\"\'#&%?¿!¡*<>:-// ");
                 while (st.hasMoreTokens () ) {
                         String s = st.nextToken();
                         Object o = this.vocabulario.get(s);
                         if (o == null){
-                        	this.vocabulario.put (s, new Ocurr(url,nt));
+                        	this.vocabulario.put (s, new Ocurr(this.urls.indexOf(url),nt));
                         }
                         else {
                                 Ocurr ocurr = (Ocurr) o;
-                                ocurr.putOcurrencia(url, nt);
+                                ocurr.putOcurrencia(this.urls.indexOf(url), nt);
                         }
                 }
         }
@@ -109,7 +112,8 @@ public class Crawler {
 		Set a = this.vocabulario.keySet();
 		Iterator i = a.iterator();
 		while(i.hasNext()) {
-	        String setElement = (String) i.next();
+			String setElement = (String) i.next();
+	        //String setElement = this.urls.get(((Integer) i.next()).intValue());
 	        System.out.println(setElement+": "+this.vocabulario.get(setElement));
 	    }
 		

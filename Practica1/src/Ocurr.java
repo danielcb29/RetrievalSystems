@@ -7,13 +7,13 @@ public class Ocurr implements Serializable {
 	private Map ocurrencia;
 
 	//Constructor caso no existe ocurr
-	public Ocurr(String url, Integer nt){
+	public Ocurr(int url, Integer nt){
 		this.ocurrencia = new TreeMap();
 		this.ftt = 0;
 		putOcurrencia(url,nt);
 	}
 	
-	public void putOcurrencia(String url,Integer nt){
+	public void putOcurrencia(int url,Integer nt){
 		this.ftt++;
 		Object o = this.ocurrencia.get(url);
 		if(o == null){
