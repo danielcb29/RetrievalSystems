@@ -1,5 +1,6 @@
+import java.io.Serializable;
 
-public class Archivo {
+public class Archivo implements Serializable {
 	private String url;
 	private int totalTerminos; //cuantos terminos en total tiene el archivo
 	

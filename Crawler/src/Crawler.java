@@ -1,42 +1,36 @@
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
-import java.util.Vector;
 
 public class Crawler {
 	
 	private Map vocabulario;
-	private Vector<Archivo> archivos;
+	private Map archivos;
+	private int contador;
 	
 	Crawler(){
 		this.vocabulario = new TreeMap();
-		this.archivos = new Vector<Archivo>();
+		this.archivos = new TreeMap();
+		this.contador = 0;
 	}
 	
 	public void mapearArchivo (BufferedReader br, String url) throws IOException {
         String linea;
         Archivo archivo = new Archivo(url,0);
-        int contador = archivos.size();
         while ( (linea = br.readLine () ) != null) {
                 StringTokenizer st = new StringTokenizer (linea, ",.;(){}=+\"\'#&%?¿!¡*<>:-// ");
                 while (st.hasMoreTokens () ) {
@@ -52,13 +46,14 @@ public class Crawler {
                         }
                 }
         }
-        archivos.add(archivo);
+        archivos.put(contador,archivo);
         br.close ();
+        contador++;
 
 	}
 	public boolean cargarMap(){
 		try {
-			FileInputStream fis = new FileInputStream("dicc.ser");
+			FileInputStream fis = new FileInputStream("dicc.map");
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			this.vocabulario = (Map) ois.readObject();
 			return true;
@@ -70,12 +65,33 @@ public class Crawler {
 	}
 	public void guardarMap(){
     	try {
-            FileOutputStream fos = new FileOutputStream("dicc.ser");
+            FileOutputStream fos = new FileOutputStream("dicc.map");
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(this.vocabulario);
         }
         catch (Exception e) { System.out.println(e); }
     }
+	
+	public boolean cargarIndices(){
+		try {
+			FileInputStream fis = new FileInputStream("ind.map");
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			this.archivos = (Map) ois.readObject();
+			return true;
+	    }
+	    catch (Exception e) { 
+	    	return false; 
+	    }
+	}
+	
+	public void guardarIndices(){
+		try {
+            FileOutputStream fos = new FileOutputStream("ind.map");
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(this.archivos);
+        }
+        catch (Exception e) { System.out.println(e); }
+	}
 	
 	public void crearVocabulario(String dir) throws IOException{
 		File fichero = new File(dir);
@@ -87,7 +103,6 @@ public class Crawler {
                 return;
         }
         if (fichero.isDirectory()) {
-        		//System.out.println(fichero.toString());
                 String [] listaFicheros = fichero.list();
                 
                 for (int i=0; i<listaFicheros.length; i++){
@@ -95,7 +110,6 @@ public class Crawler {
                 }
         }
         else{ 
-        		//System.out.println(fichero.toString());
                 FileReader fr = new FileReader(fichero);
                 BufferedReader br = new BufferedReader(fr);
                 mapearArchivo(br,fichero.toString());
@@ -112,17 +126,16 @@ public class Crawler {
 		Iterator i = a.iterator();
 		while(i.hasNext()) {
 			String setElement = (String) i.next();
-	        //String setElement = this.urls.get(((Integer) i.next()).intValue());
 	        System.out.println(setElement+": "+this.vocabulario.get(setElement));
 	    }
 		
 	}
 	
-	public void stringArchivos(){
+	/*public void stringArchivos(){
 		for(int i=0; i< this.archivos.size();i++){
 			System.out.println("Pos: "+i+" url:"+this.archivos.get(i).getUrl());
 		}
-	}
+	}*/
 	
 	public void buscar() throws IOException{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -142,7 +155,8 @@ public class Crawler {
                  Iterator i = claves.iterator ();
                  while (i.hasNext ()) {
                          int k = (int)i.next ();
-                         String url = this.archivos.get(k).getUrl();
+                         Archivo archivo = (Archivo) this.archivos.get(k);
+                         String url = archivo.getUrl();
                          Valor_Ocurr val = (Valor_Ocurr) ocurrencias.get (k);
                          System.out.println(url + " : " + val.getFtl());
                  }
