@@ -13,8 +13,8 @@ public class Main {
         }else{
         	System.out.println("Creando mapa...");
         	String home = System.getProperty("user.home");
-        	c.crearVocabulario("/Users/daniel/Documents/UnEx/RWB/carpeta");
-        	//c.crearVocabulario(home);
+        	//c.crearVocabulario("/Users/daniel/Documents/UnEx/RWB/carpeta");
+        	c.crearVocabulario(home);
             c.guardarMap();
             c.guardarIndices();
             System.out.println("He terminado...");
