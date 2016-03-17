@@ -97,10 +97,20 @@ public class Crawler {
 		catch (Exception e) { System.out.println(e); }
 	}
 	public boolean validar(File fichero){
-		if(fichero.isHidden()|| !fichero.exists() || !fichero.canRead()){
+		if(fichero.isHidden()|| !fichero.exists() || !fichero.canRead() ){
 			//System.out.println("No se puede leer: "+fichero.toString());
 			return false;
 		}
+		if ((!fichero.isDirectory())){
+			System.out.println("es archivo: "+fichero.toString());
+			if(!fichero.getName().endsWith(".txt") && !fichero.getName().endsWith(".java") && !fichero.getName().endsWith(".cpp")){
+				//System.out.println("condicion: "+fichero.getName());
+				return false;
+			}
+				
+		}
+			//return false;
+		//}
 		return true;
 	}
 	public void crearVocabulario(String dir) throws IOException{
@@ -118,6 +128,8 @@ public class Crawler {
 				}else{
 					FileReader fr = new FileReader(fichero);
 					BufferedReader br = new BufferedReader(fr);
+					//System.out.println("name:"+fichero.getName());
+					//System.out.println("endswith:"+fichero.getName().endsWith(".txt"));
 					mapearArchivo(br,fichero.toString());
 				}
 			}
